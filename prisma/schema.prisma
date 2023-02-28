@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id        Int      @id @default(autoincrement())
+  DiscordID String   @unique
+  SR        Int
+  Language  String   @default("fr")
+  Admin     Boolean  @default(false)
+  Member    Member[]
+}
+
+model Team {
+  id     Int      @id @default(autoincrement())
+  Name   String   @unique
+  RoleID String?  @unique
+  Logo   String?
+  Member Member[]
+}
+
+model Member {
+  id       Int    @id @default(autoincrement())
+  Player   Player @relation(fields: [PlayerID], references: [id], onDelete: Cascade)
+  PlayerID Int
+  Team     Team   @relation(fields: [TeamID], references: [id], onDelete: Cascade)
+  TeamID   Int
+  Role     String
+}
